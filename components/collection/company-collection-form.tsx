@@ -55,15 +55,27 @@ export default function CompanyCollectionForm() {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500))
 
-      // TODO: Replace with actual API call to save to database
-      console.log('[v0] Company submission:', {
-        companyName,
-        companyType,
+      const newSubmission = {
+        id: crypto.randomUUID(),
+        name: companyName,
+        type: companyType,
         weight: parseFloat(weight),
         contactPerson,
         notes,
+        entryType: 'company',
         timestamp: new Date().toISOString(),
-      })
+        status: 'pending'
+      }
+
+      const existingData = localStorage.getItem('collection_submissions')
+      const submissions = existingData ? JSON.parse(existingData) : []
+      submissions.push(newSubmission)
+      localStorage.setItem('collection_submissions', JSON.stringify(submissions))
+
+      // Trigger a custom event so history can re-fetch
+      window.dispatchEvent(new Event('collection_submission_updated'))
+
+      console.log('[v0] Company submission:', newSubmission)
 
       setSuccess(true)
       setCompanyName('')

@@ -23,10 +23,41 @@ export default function CollectionHistory({ type }: CollectionHistoryProps) {
   const [entries, setEntries] = useState<CollectionEntry[]>([])
   const [loading, setLoading] = useState(true)
 
+  const fetchEntries = () => {
+    try {
+      const storedData = localStorage.getItem('collection_submissions')
+      if (storedData) {
+        const parsed = JSON.parse(storedData)
+        // Filter by entryType inside the parsed object
+        const filtered = parsed
+          .filter((item: any) => 
+            type === 'individual' ? item.type === 'individual' : item.entryType === 'company'
+          )
+          .map((item: any) => ({
+            ...item,
+            timestamp: new Date(item.timestamp)
+          }))
+          // Sort newest first
+          .sort((a: any, b: any) => b.timestamp.getTime() - a.timestamp.getTime())
+        
+        setEntries(filtered)
+      }
+    } catch (e) {
+      console.error('Failed to parse localStorage data', e)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
-    // TODO: Fetch from Supabase
-    // Simulating an empty state for now
-    setLoading(false)
+    fetchEntries()
+
+    // Listen for the custom event to refetch when new submission occurs
+    window.addEventListener('collection_submission_updated', fetchEntries)
+
+    return () => {
+      window.removeEventListener('collection_submission_updated', fetchEntries)
+    }
   }, [type])
 
   if (loading) {

@@ -125,13 +125,24 @@ export default function IndividualCollectionForm() {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500))
 
-      // TODO: Replace with actual API call to save to database
-      console.log('[v0] Individual submission:', {
-        fullName,
+      const newSubmission = {
+        id: crypto.randomUUID(),
+        name: fullName,
         weight: parseFloat(weight),
+        type: 'individual',
         timestamp: new Date().toISOString(),
-        facePhotoUrl: '(stored in database)',
-      })
+        status: 'pending'
+      }
+
+      const existingData = localStorage.getItem('collection_submissions')
+      const submissions = existingData ? JSON.parse(existingData) : []
+      submissions.push(newSubmission)
+      localStorage.setItem('collection_submissions', JSON.stringify(submissions))
+
+      // Trigger a custom event so history can re-fetch
+      window.dispatchEvent(new Event('collection_submission_updated'))
+
+      console.log('[v0] Individual submission:', newSubmission)
 
       setSuccess(true)
       setFullName('')
