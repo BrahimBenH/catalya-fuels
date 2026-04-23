@@ -23,27 +23,37 @@ export default function IndividualCollectionForm() {
   const [cameraActive, setCameraActive] = useState(false)
 
   useEffect(() => {
+    let stream: MediaStream | null = null;
+    
     if (showCamera) {
-      startCamera()
-    } else {
-      stopCamera()
-    }
-    return () => stopCamera()
-  }, [showCamera])
-
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
+      navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user' },
+      }).then(mediaStream => {
+        stream = mediaStream
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream
+          setCameraActive(true)
+        }
+      }).catch(err => {
+        setError('Unable to access camera')
       })
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        setCameraActive(true)
+    } else {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop())
       }
-    } catch (err) {
-      setError('Unable to access camera')
+      setCameraActive(false)
     }
-  }
+
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop())
+      }
+      if (videoRef.current) {
+        videoRef.current.srcObject = null
+      }
+      setCameraActive(false)
+    }
+  }, [showCamera])
 
   const capturePhoto = () => {
     if (videoRef.current && canvasRef.current) {
@@ -57,18 +67,25 @@ export default function IndividualCollectionForm() {
         const imageData = canvas.toDataURL('image/jpeg', 0.8)
         setFacePhotoUrl(imageData)
         setShowCamera(false)
-        stopCamera()
+        handleStopCamera()
       }
     }
   }
 
-  const stopCamera = () => {
+  const stopMediaTracks = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const tracks = (videoRef.current.srcObject as MediaStream).getTracks()
       tracks.forEach(track => track.stop())
-      setCameraActive(false)
-      setShowCamera(false)
+      if (videoRef.current) {
+        videoRef.current.srcObject = null
+      }
     }
+    setCameraActive(false)
+  }
+
+  const handleStopCamera = () => {
+    stopMediaTracks()
+    setShowCamera(false)
   }
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -226,7 +243,7 @@ export default function IndividualCollectionForm() {
                     type="button"
                     variant="outline"
                     className="flex-1"
-                    onClick={stopCamera}
+                    onClick={handleStopCamera}
                   >
                     Cancel
                   </Button>
