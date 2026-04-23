@@ -11,7 +11,7 @@ export default function Home() {
       <nav className="border-b border-border bg-background sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <Image src="/logo.png" alt="Catalya Fuels" width={40} height={40} className="w-10 h-10" />
+            <Image src="/logo.png" alt="Catalya Fuels" width={120} height={40} className="h-10 w-auto object-contain" />
             <span className="text-xl font-bold text-primary hidden sm:inline">Catalya Fuels</span>
           </Link>
           <div className="flex gap-4">
@@ -27,7 +27,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center space-y-8">
             <div className="inline-flex">
-              <Image src="/logo.png" alt="Catalya Fuels" width={80} height={80} className="w-20 h-20" />
+              <Image src="/logo.png" alt="Catalya Fuels" width={240} height={80} className="h-20 w-auto object-contain" />
             </div>
             <h1 className="text-6xl sm:text-7xl font-bold text-primary text-balance">
               Turning Waste Into Power
@@ -516,7 +516,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="space-y-4">
-              <Image src="/logo.png" alt="Catalya Fuels" width={40} height={40} />
+              <Image src="/logo.png" alt="Catalya Fuels" width={120} height={40} className="h-10 w-auto object-contain" />
               <p className="text-sm text-muted-foreground">Turning Waste Into Power</p>
             </div>
             <div className="space-y-2">

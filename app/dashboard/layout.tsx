@@ -14,7 +14,7 @@ export default function DashboardLayout({
       <nav className="border-b border-border bg-card sticky top-0 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <Image src="/logo.png" alt="Catalya Fuels" width={40} height={40} className="w-10 h-10" />
+            <Image src="/logo.png" alt="Catalya Fuels" width={120} height={40} className="h-10 w-auto object-contain" />
             <span className="text-xl font-bold text-primary hidden sm:inline">Catalya Fuels</span>
             <span className="text-xs font-semibold text-primary/70 sm:hidden">Dashboard</span>
           </Link>
