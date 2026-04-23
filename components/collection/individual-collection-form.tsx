@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -22,6 +22,15 @@ export default function IndividualCollectionForm() {
   const [showCamera, setShowCamera] = useState(false)
   const [cameraActive, setCameraActive] = useState(false)
 
+  useEffect(() => {
+    if (showCamera) {
+      startCamera()
+    } else {
+      stopCamera()
+    }
+    return () => stopCamera()
+  }, [showCamera])
+
   const startCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -38,11 +47,16 @@ export default function IndividualCollectionForm() {
 
   const capturePhoto = () => {
     if (videoRef.current && canvasRef.current) {
-      const context = canvasRef.current.getContext('2d')
+      const video = videoRef.current
+      const canvas = canvasRef.current
+      canvas.width = video.videoWidth
+      canvas.height = video.videoHeight
+      const context = canvas.getContext('2d')
       if (context) {
-        context.drawImage(videoRef.current, 0, 0, 320, 240)
-        const imageData = canvasRef.current.toDataURL('image/jpeg')
+        context.drawImage(video, 0, 0, canvas.width, canvas.height)
+        const imageData = canvas.toDataURL('image/jpeg', 0.8)
         setFacePhotoUrl(imageData)
+        setShowCamera(false)
         stopCamera()
       }
     }
@@ -184,12 +198,12 @@ export default function IndividualCollectionForm() {
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="bg-black rounded-lg overflow-hidden">
+                <div className="bg-black rounded-lg overflow-hidden flex justify-center items-center">
                   <video
                     ref={videoRef}
                     autoPlay
                     playsInline
-                    className="w-full h-60 object-cover"
+                    className="w-full h-auto max-h-[60vh] object-contain aspect-square sm:aspect-video"
                   />
                 </div>
                 <canvas
