@@ -203,7 +203,7 @@ export default function IndividualCollectionForm() {
                     ref={videoRef}
                     autoPlay
                     playsInline
-                    className="w-full h-auto max-h-[60vh] object-contain aspect-square sm:aspect-video"
+                    className="w-full h-auto max-h-[60vh] object-contain"
                   />
                 </div>
                 <canvas
